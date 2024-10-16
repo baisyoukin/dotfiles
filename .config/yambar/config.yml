@@ -1,0 +1,70 @@
+font: &font CaskaydiaMono NF:pixelsize=18
+love: &love b4637aff
+rose: &rose d7827eff
+gold: &gold de935fff
+muted: &muted 373b41ff
+
+bar:
+  height: 36
+  location: top
+  font: *font
+  layer: top
+  foreground: c5c8c6ff
+  background: 1d1f21ff
+  left:
+    - river:
+        anchors:
+          - base: &river_base
+              left-margin: 14
+              default: {string: {text:  , foreground: *muted}}
+              conditions:
+                state == urgent: {string: {text:  , foreground: *gold}}
+                state == focused: {string: {text:  , foreground: *rose}}
+        content:
+          map:
+            default:
+              map:
+                <<: *river_base
+                on-click:
+                  left: sh -c "riverctl set-focused-tags $((1 << ({id} - 1))) & ~/.config/scripts/set-background.sh {id}"
+                  right: sh -c "riverctl toggle-focused-tags $((1 << ({id} -1)))"
+            conditions:
+              # keep the first *persistent workspaces + special workspace always shown
+              state == invisible && ~occupied && id > 3 && id != 10: {empty: {}}
+    - foreign-toplevel:
+        content:
+          map:
+            margin: 18
+            default: {empty: {}}
+            conditions:
+              activated: {string: {text: "{app-id}"}}
+  right:
+    - pipewire:
+        anchors:
+          volume: &volume
+            conditions:
+              muted: {string: {text: "{linear_volume}%", foreground: ff0000ff}}
+              ~muted: {string: {text: "{linear_volume}%"}}
+        content:
+          list:
+            items:
+              - map:
+                  conditions:
+                    type == "sink":
+                      map:
+                        conditions:
+                          icon == "audio-headset-bluetooth":
+                            string: {text: "🎧"}
+                        default:
+                          - ramp:
+                              tag: linear_volume
+                              items:
+                                - string: {text: "🔈"}
+                                - string: {text: "🔉"}
+                                - string: {text: "🔊"}
+              - map:
+                  <<: *volume
+    - clock:
+        time-format: "%H:%M:%S"
+        content:
+          - string: {text: "{time}", margin: 14}
