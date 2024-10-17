@@ -11,6 +11,7 @@ alias ls='ls --color=auto -a'
 alias grep='grep --color=auto'
 alias sudo='sudo -v; sudo'
 export PS1="\[$(tput bold)\]\[$(tput setaf 1)\][\[$(tput setaf 3)\]\u\[$(tput setaf 2)\]@\[$(tput setaf 4)\]\h \[$(tput setaf 5)\]\W\[$(tput setaf 1)\]]\[$(tput setaf 7)\]\\$ \[$(tput sgr0)\]"
+export TERM="xterm-256color"
 
 source /usr/share/bash-completion/bash_completion
 
